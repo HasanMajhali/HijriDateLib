@@ -101,28 +101,31 @@ class datetime extends \DateTime
 	 * @example 'examples/monthCalendar.php' 12 3 Create new DateTime
 	 *
 	 */
-	public function __construct($time = 'now', \DateTimeZone $timezone = null, $langcode = null, $hijriCalendar = null)
-	{
-		global $hijri_settings;
-		if (isset($hijriCalendar)) {
-			if ($hijriCalendar instanceof Calendar) {
-				$this->hcal = $hijriCalendar;
-			} else {
-				$error = 'The fourth param of datetime() must be "hijri\Calendar"';
-				throw new \Exception($error);
-			}
+public function __construct($time = 'now', \DateTimeZone $timezone = null, $langcode = null, $hijriCalendar = null)
+{
+	global $hijri_settings;
+
+	if (isset($hijriCalendar)) {
+		if ($hijriCalendar instanceof Calendar) {
+			$this->hcal = $hijriCalendar;
+		} else {
+			$error = 'The fourth param of datetime() must be "hijri\Calendar"';
+			throw new \Exception($error);
 		}
-		
-		if (isset($langcode)) {
-			$this->langcode = $langcode;
-		} elseif (isset($hijri_settings['langcode'])) {
-			$this->langcode = $hijri_settings['langcode'];
-		}
-		if (isset($hijri_settings['defaultformat'])) {
-			$this->defaultformat = $hijri_settings['defaultformat'];
-		}
-		parent::__construct($time, $timezone);
 	}
+
+	if (isset($langcode)) {
+		$this->langcode = $langcode;
+	} elseif (isset($hijri_settings['langcode'])) {
+		$this->langcode = $hijri_settings['langcode'];
+	}
+	if (isset($hijri_settings['defaultformat'])) {
+		$this->defaultformat = $hijri_settings['defaultformat'];
+	}
+
+	// ✅ Fix null time issue
+	parent::__construct($time ?? 'now', $timezone);
+}
 
 	/**
 	 * Create DateTime object from hijri date
