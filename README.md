@@ -27,3 +27,10 @@ Fixed misleading comment on json_decode() (was incorrectly labeled as unserializ
 Standardized TRUE/FALSE → true/false for modern PHP conventions.
 Updated array() → [] syntax in default parameters and key declarations for cleaner, PHP 7.1+ compliant code.
 Your hijri.class.php is now fully optimized for PHP 8.4.19+ with zero deprecations, strict return typing, and modern syntax while preserving 100% of its original astronomical/calendar logic.
+
+What Was Fixed:
+Explicit Nullable Types: Added ? before \DateTimeZone in __construct() and createFromHijri() to stop the PHP 8.4 deprecation.
+Removed #[\ReturnTypeWillChange]: Replaced it with : string return type on format() (PHP 8.4 no longer needs the temporary patch).
+Modernized list() → []: Converted all legacy list() assignments to modern PHP 7.1+ array destructuring.
+Standardized true/false: Replaced TRUE/FALSE for consistency with modern PHP coding standards.
+Fixed json_decode comment: Corrected misleading inline comment that incorrectly referenced unserialize.
