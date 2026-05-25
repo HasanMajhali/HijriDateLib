@@ -30,12 +30,12 @@ namespace hijri;
 * <li>Umm Al-Qura Algorithm.</ul>
 * to set the default setting of this class use $hijri_settings variable which
 * is an array with this sample structure:
-* <pre><code>$hijri_settings=array(
+* <pre><code>$hijri_settings=[
 * 'langcode'=>'ar',
 * 'defaultformat'=>'_j _M _Yهـ',
-* 'umalqura'=TRUE,
-* 'adj_data'=> array(1426 => 57250, 1429 => 57339,)
-* );</code></pre>
+* 'umalqura'=>true,
+* 'adj_data'=> [1426 => 57250, 1429 => 57339,]
+* ];</code></pre>
 *
 *
 *
@@ -81,7 +81,7 @@ public $langcode = 'ar';
 *
 * @param string $time
 *        	String in a format accepted by strtotime() default is 'now'
-* @param \DateTimeZone $timezone
+* @param ?\DateTimeZone $timezone
 *        	Time zone of the time default is ini timezone
 * @param string $langcode
 *        	set the language which can be any of supported languages in Calendar object if not set the default is 'ar'
@@ -93,7 +93,7 @@ public $langcode = 'ar';
 * @example 'examples/monthCalendar.php' 12 3 Create new DateTime
 *
 */
-public function __construct($time = 'now', \DateTimeZone $timezone = null, $langcode = null, $hijriCalendar = null)
+public function __construct($time = 'now', ?\DateTimeZone $timezone = null, $langcode = null, $hijriCalendar = null)
 {
 global $hijri_settings;
 if (isset($hijriCalendar)) {
@@ -124,7 +124,7 @@ parent::__construct($time ?? 'now', $timezone);
 *        	the hijri month
 * @param integer $day
 *        	the hijri day
-* @param \DateTimeZone $timezone
+* @param ?\DateTimeZone $timezone
 *        	Optional the time zone object
 * @param string $langcode
 *        	Optional the langcode
@@ -132,7 +132,7 @@ parent::__construct($time ?? 'now', $timezone);
 *        	Optional the Calendar object
 * @return self datetime object from the given hijri date
 */
-public static function createFromHijri($year, $month, $day, \DateTimeZone $timezone = null, $langcode = null, $hijriCalendar = null)
+public static function createFromHijri($year, $month, $day, ?\DateTimeZone $timezone = null, $langcode = null, $hijriCalendar = null)
 {
 if (isset($hijriCalendar) && ($hijriCalendar instanceof Calendar)) {
 static::$hcal = $hijriCalendar;
@@ -364,13 +364,13 @@ $this->hcal = self::$s_hcal;
 * of this algorithm can be adjusted by using CalendarAdjustment Class see file adjuster.php in folder example as sample</dd>
 * to set the default setting of this class use $hijri_settings variable which
 * is an array with this sample structure:
-* <pre><code>$hijri_settings=array(
+* <pre><code>$hijri_settings=[
 * 'langcode'=>'ar',
 * 'defaultformat'=>'_j _M _Yهـ',
-* 'umalqura'=> TRUE,
-* 'adj_data'=> array(1426 => 57250, 1429 => 57339,),
+* 'umalqura'=> true,
+* 'adj_data'=> [1426 => 57250, 1429 => 57339,],
 * 'grdate_format' => 'j M Y',
-* );</code></pre>
+* ];</code></pre>
 *
 *
 *
@@ -382,7 +382,7 @@ $this->hcal = self::$s_hcal;
 * @category datetime, calendar
 * @link http://salafitech.net
 * @since 2.3.0
-* $hijri_sittings['adj_data'] must be an array or string contains a serialiezed array
+* $hijri_sittings['adj_data'] must be an array or string contains a serialized array
 */
 class Calendar
 {
@@ -448,8 +448,8 @@ public static $supported_languages = ['ar', 'en', 'fa', 'ur', 'sq', 'az', 'bn', 
 *        	Optional array contains one or more settings of the hijri
 *        	calendar object these settings are:
 *        	<dt>umalqura:bool</dt> <dd> TRUE to use Um AlQura algorithm, FALSE to use Hijri Tabular algorithm</dd>
-*        	<dt>adj_data:string|array</dt> <dd>string: contains Um Al-Qura adjustment data that got by function get_adjdata(TRUE) of CalendarAdjustment class
-*        	or array contains Um Al-Qura adjustment data that got by function get_adjdata(FALSE)</dd>
+*        	<dt>adj_data:string|array</dt> <dd>string: contains Um Al-Qura adjustment data that got by function get_adjdata(true) of CalendarAdjustment class
+*        	or array contains Um Al-Qura adjustment data that got by function get_adjdata(false)</dd>
 *        	if not set, the defaults from $hijri_settings global variable will be used.
 * @return Calendar hijri\Calendar object with the specified settings.
 */
@@ -468,7 +468,7 @@ if (isset($settings['adj_data'])) {
 if (is_array($settings['adj_data'])) {
 $this->adj_data = $settings['adj_data'];
 } else {
-// ✅ Fixed: was previously commented as "unserialize", now correctly noted as json_decode
+// ✅ Fixed: correctly uses json_decode (not unserialize)
 $unser = json_decode($settings['adj_data'], true);
 if (is_array($unser)) {
 $this->adj_data = $unser;
@@ -481,9 +481,9 @@ $this->adj_data = $unser;
 * Loads Um Al-Qura data and apply the adjustments
 *
 * @param boolean $with_adj
-*        	TRUE (default) to apply adjustments, FALSE to not
+*        	true (default) to apply adjustments, false to not
 * @param bool $return_array
-*        	True to return umdata array, False to load umdata to $umdata variable
+*        	true to return umdata array, false to load umdata to $umdata variable
 * @return array|bool array contains Um Al-Qura data if $return_array =true, bool true else
 */
 protected function get_umalquradata($with_adj = true, $return_array = false)
@@ -793,7 +793,7 @@ return $j;
 * @param int $year
 *        	the Hijri year
 * @param bool $umalqura
-*        	TRUE to use Um Al-Qura, FALSE to use Tabular, defaults from Calendar object
+*        	true to use Um Al-Qura, false to use Tabular, defaults from Calendar object
 * @return int count of days in month 29 or 30
 */
 public function days_in_month($month, $year, $umalqura = null)
@@ -924,7 +924,7 @@ return $mymonth_names[$month];
 * @param int $year
 *        	the Hijri Year
 * @param bool $umalqura
-*        	TRUE to use Um Al-Qura, FALSE to use Tabular, defaults from Calendar object
+*        	true to use Um Al-Qura, false to use Tabular, defaults from Calendar object
 * @return int 1 if the given year is leap(have 355 days), 0 else
 */
 public function leap_year($year, $umalqura = null)
@@ -1010,13 +1010,13 @@ return 'th';
 *
 * to set the default setting of this class use $hijri_settings variable which
 * is an array with this sample structure:
-* <pre><code>$hijri_settings=array(
+* <pre><code>$hijri_settings=[
 * 'langcode'=>'ar',
 * 'defaultformat'=>'_j _M _Yهـ',
-* 'umalqura'=> TRUE,
-* 'adj_data'=> array(1426 => 57250, 1429 => 57339,),
+* 'umalqura'=> true,
+* 'adj_data'=> [1426 => 57250, 1429 => 57339,],
 * 'grdate_format' => 'j M Y',
-* );</code></pre>
+* ];</code></pre>
 *
 *
 *
@@ -1050,8 +1050,8 @@ private $grdate_format;
 *        	Array contains one or more settings of the hijri
 *        	CalendarAdjustment object these settings are:
 *        	<div style='margin-left:20px'>
-*        	<dt>adj_data: string|array</dt> <dd>string: contains Um Al-Qura adjustment data that got by function get_adjdata(TRUE) of CalendarAdjustment class
-*        	or array contains Um Al-Qura adjustment data that got by function get_adjdata(FALSE)</dd>
+*        	<dt>adj_data: string|array</dt> <dd>string: contains Um Al-Qura adjustment data that got by function get_adjdata(true) of CalendarAdjustment class
+*        	or array contains Um Al-Qura adjustment data that got by function get_adjdata(false)</dd>
 *        	<dt>grdate_format: string</dt> <dd>date format to show the Gregorian dates in adjustment process</dd><div>
 *        	if not set, the defaults from $hijri_settings global variable will be used.
 *
@@ -1094,7 +1094,7 @@ return [$hm, $hy];
 * returned string is json encoded array
 * @since 2.1.0
 * @param bool $txt
-*        	true to return a json encoded array string False to return array.
+*        	true to return a json encoded array string false to return array.
 * @return string|array string json encoded array adjustment data if $txt is true, or array of adjustment data if $txt if false
 */
 public function get_adjdata($txt = true)
